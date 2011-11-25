@@ -4,6 +4,7 @@ package andient;/* andient.SeqNotes -- sequencer-like thing, shades of the olden
  *		Brad Garton	10/2001
  */
 
+import andient.player.component.BradUtils;
 import com.softsynth.jsyn.*;
 
 import java.util.logging.Logger;

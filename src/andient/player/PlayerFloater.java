@@ -1,12 +1,13 @@
-package andient;
+package andient.player;
 
+import andient.player.component.BradUtils;
+import andient.player.component.Reverb1;
+import andient.player.component.VibDist;
 import com.softsynth.jsyn.*;
-import jnissa.Reverb1;
-import jnissa.VibDist;
 
 import java.util.logging.Logger;
 
-class PlayerFloater extends BaseThreadedPlayer {
+public class PlayerFloater extends BaseThreadedPlayer {
     boolean go = true;
     boolean paused = true;
     VibDist[] vibdisters = new VibDist[3];

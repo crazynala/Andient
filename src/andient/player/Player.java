@@ -1,4 +1,6 @@
-package andient;
+package andient.player;
+
+import andient.StatusListener;
 
 /**
  * User: dan

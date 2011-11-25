@@ -1,5 +1,6 @@
-package andient;
+package andient.player;
 
+import andient.StatusListener;
 import com.softsynth.jsyn.LineOut;
 import com.softsynth.jsyn.MultiplyUnit;
 import com.softsynth.jsyn.SynthException;

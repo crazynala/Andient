@@ -1,5 +1,7 @@
 package andient;
 
+import andient.player.Player;
+import andient.player.PlayerTypeEnum;
 import slider.RangeSlider;
 
 import javax.swing.*;

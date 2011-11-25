@@ -4,6 +4,7 @@ package andient;/*  andient.WarbleNote -- makes a warbley note, of course
  *		Brad Garton	10/2001
  */
 
+import andient.player.component.BradUtils;
 import com.softsynth.jsyn.*;
 
 class Warble extends SynthCircuit {

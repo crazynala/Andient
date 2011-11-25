@@ -1,11 +1,7 @@
-package jnissa;/*  jnissa.PitchThread -- periodically resets the pitch of the various jnissa.jnissa threads
- *
- *              Brad Garton     12/2001
- */
+package andient;
 
-class PitchThread extends Thread
-{
-	boolean mygo;
+class PitchThread extends Thread {
+/*	boolean mygo;
 	double pitchbase = 8.00;
 	jnissa parent;
 
@@ -45,5 +41,5 @@ class PitchThread extends Thread
 			if (parent.dstnotes != null) parent.dstnotes.setPitch(pitchbase);
 			if (parent.bassnotes != null) parent.bassnotes.setPitch(pitchbase);
 		}
-	}
+	}*/
 }

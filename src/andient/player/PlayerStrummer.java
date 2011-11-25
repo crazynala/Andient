@@ -1,12 +1,13 @@
-package andient;
+package andient.player;
 
+import andient.player.component.BradFlange;
+import andient.player.component.BradUtils;
+import andient.player.component.Strum;
 import com.softsynth.jsyn.*;
-import jnissa.BradFlange;
-import jnissa.Strum;
 
 import java.util.logging.Logger;
 
-class PlayerStrummer extends BaseThreadedPlayer {
+public class PlayerStrummer extends BaseThreadedPlayer {
     boolean go = true;
     boolean paused = true;
     Strum[] strummers = new Strum[2];
@@ -19,7 +20,7 @@ class PlayerStrummer extends BaseThreadedPlayer {
 
     private final static Logger logger = Logger.getLogger(PlayerStrummer.class.getName());
 
-    protected PlayerStrummer(int amplitude, double loadValue, double pitchBase, int lowTriggerThreshold, int highTriggerThreshold, int triggerLevel) throws SynthException {
+    public PlayerStrummer(int amplitude, double loadValue, double pitchBase, int lowTriggerThreshold, int highTriggerThreshold, int triggerLevel) throws SynthException {
         super(amplitude, loadValue, pitchBase, lowTriggerThreshold, highTriggerThreshold, triggerLevel);
 
         int i;

@@ -4,6 +4,7 @@ package andient;/* andient.BurstNote -- blips of noise + swoopy windish sounds (
  *		Brad Garton	10/2001
  */
 
+import andient.player.component.BradUtils;
 import com.softsynth.jsyn.*;
 import com.softsynth.jsyn.circuits.MultiTapDelay;
 

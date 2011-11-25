@@ -4,6 +4,8 @@ package andient;/* andient.Speckle --- object to handle random purdy colored dot
  *
 */
 
+import andient.player.component.BradUtils;
+
 import java.awt.*;
 
 public class Speckle extends Thread {

@@ -1,11 +1,11 @@
-package andient;
+package andient.player.component;
 
 public class BradUtils extends Object {
 
     // basefreq is the center, spreadpct is amount around
     //	(i.e. 0.01 == 1 percent around the base (==  +/- 0.5 pct))
 
-    static double windowfreq(double basefreq, double spreadpct) {
+    public static double windowfreq(double basefreq, double spreadpct) {
         double boundfreq;
         double spreadfreq;
 
@@ -15,7 +15,7 @@ public class BradUtils extends Object {
     }
 
     // does what is obvious
-    static double crandom(double low, double high) {
+    public static double crandom(double low, double high) {
         double retval;
 
         retval = (high - low) * Math.random();
@@ -23,7 +23,7 @@ public class BradUtils extends Object {
     }
 
     // choose a random item from a double array
-    static double chooseItem(double items[]) {
+    public static double chooseItem(double items[]) {
         int index;
 
         index = (int) (Math.random() * (double) (items.length));
@@ -35,7 +35,7 @@ public class BradUtils extends Object {
     // mean is 0.5, and I cut off stuff outside the bounds arbitrarily
     // the "focus" is the cutoff, should be > 2.0 -- the larger it is,
     // the more clumped the center will be
-    static double gaussian(double focus) {
+    public static double gaussian(double focus) {
         double output;
 
         do {
@@ -45,10 +45,10 @@ public class BradUtils extends Object {
         return (output);
     }
 
-    static boolean havegnum = false;
-    static double gnum = 0.0;
+    public static boolean havegnum = false;
+    public static double gnum = 0.0;
 
-    static double internal_gauss() {
+    public static double internal_gauss() {
         if (havegnum) {
             havegnum = false;
             return (gnum);
@@ -69,7 +69,7 @@ public class BradUtils extends Object {
 
 
     // returns freq in Hz based on oct.pc input (from RTcmix, of course!)
-    static double cpspch(double pch) {
+    public static double cpspch(double pch) {
         int oct;
         double retval;
 

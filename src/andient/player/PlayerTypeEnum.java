@@ -1,4 +1,4 @@
-package andient;
+package andient.player;
 
 /**
  * User: dan

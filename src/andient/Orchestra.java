@@ -1,5 +1,6 @@
 package andient;
 
+import andient.player.*;
 import com.softsynth.jsyn.Synth;
 
 import java.util.HashSet;
@@ -39,6 +40,15 @@ public class Orchestra {
                 break;
             case FLOATER:
                 newPlayer = new PlayerFloater(100, 0.4, 8, 25, 75, triggerLevel);
+                break;
+            case DOODLER:
+                newPlayer = new PlayerDoodler(100, 0.4, 8, 25, 75, triggerLevel);
+                break;
+            case CHUNKER:
+                newPlayer = new PlayerChunker(100, 0.4, 8, 25, 75, triggerLevel);
+                break;
+            case BASS:
+                newPlayer = new PlayerBass(100, 0.4, 8, 25, 75, triggerLevel);
                 break;
             default:
                 newPlayer = new PlayerStrummer(100, 0.4, 8, 25, 75, triggerLevel);
