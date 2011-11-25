@@ -11,9 +11,11 @@ import java.awt.event.MouseWheelListener;
 public class MainFrame extends JDialog implements KnobListener {
     private JPanel contentPane;
     private JButton buttonQuit;
-    private PlayerPanel instrumentPanel1;
-    private PlayerPanel instrumentPanel2;
+    private PlayerPanel playerPanel2;
     private JSlider triggerSlider;
+    private PlayerPanel playerPanel4;
+    private PlayerPanel playerPanel3;
+    private PlayerPanel playerPanel1;
     ArduinoHookup arduinoHookup = new ArduinoHookup();
 
     public MainFrame() {

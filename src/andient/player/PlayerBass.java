@@ -55,7 +55,7 @@ public class PlayerBass extends BaseThreadedPlayer {
 
         try {
             // don't stop noteOut while app is running, clicks!
-            if (noteOutStop == true) noteOut.stop();
+            noteOut.stop();
 
             bass1.stop();
             bass2.stop();

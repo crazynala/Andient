@@ -33,7 +33,7 @@ public class Orchestra {
     }
 
     public Player createAndRegisterPlayer(PlayerTypeEnum playerType) {
-        Player newPlayer;
+        Player newPlayer = null;
         switch (playerType) {
             case STRUMMER:
                 newPlayer = new PlayerStrummer(100, 0.4, 8, 25, 75, triggerLevel);
@@ -50,10 +50,14 @@ public class Orchestra {
             case BASS:
                 newPlayer = new PlayerBass(100, 0.4, 8, 25, 75, triggerLevel);
                 break;
-            default:
-                newPlayer = new PlayerStrummer(100, 0.4, 8, 25, 75, triggerLevel);
+            case DRONER:
+                newPlayer = new PlayerDroner(100, 0.4, 8, 25, 75, triggerLevel);
+                break;
+
         }
-        playerSet.add(newPlayer);
+        if (newPlayer != null) {
+            playerSet.add(newPlayer);
+        }
         return newPlayer;
     }
 

@@ -1,26 +1,19 @@
-package andient;/* andient.DroneNotes -- notes that drone
- * part of the andient.jlooch app
- *
- *		Brad Garton	10/2001
- */
+package andient;
 
+import andient.player.BaseThreadedPlayer;
 import andient.player.component.BradUtils;
 import com.softsynth.jsyn.*;
 
 import java.util.logging.Logger;
 
-class DroneThread extends Thread {
-    private final static Logger logger = Logger.getLogger(DroneThread.class.getName());
-    public double prob = 1.0;
+class PlayerDroner extends BaseThreadedPlayer {
+    private final static Logger logger = Logger.getLogger(PlayerDroner.class.getName());
     boolean go = true;
-    boolean running = false;
-    int threadNum;
     TableOscillator[] droneOsc = new TableOscillator[2];
     AddUnit oscMixer;
     SynthTable oscTable;
     EnvelopePlayer droneEnvPlayer;
     SynthEnvelope droneEnv;
-    LineOut droneOut;
     double[] tData = new double[257];
     Filter_LowPass droneFilt;
     DelayUnit del1;
@@ -38,7 +31,9 @@ class DroneThread extends Thread {
                     8.02, 8.03, 8.05, 8.07, 8.10, 9.00
             };
 
-    public DroneThread() throws SynthException {
+    public PlayerDroner(int amplitudeSetting, double loadValue, double pitchBase, int lowTriggerThreshold, int highTriggerThreshold, int triggerLevel) throws SynthException {
+        super(amplitudeSetting, loadValue, pitchBase, lowTriggerThreshold, highTriggerThreshold, triggerLevel);
+
         int i;
 
         droneOsc[0] = new TableOscillator();
@@ -49,7 +44,6 @@ class DroneThread extends Thread {
         del2 = new DelayUnit(0.49);
         droneEnvPlayer = new EnvelopePlayer();
         filtEnvPlayer = new EnvelopePlayer();
-        droneOut = new LineOut();
         del1inMixer = new AddUnit();
         outAMixer = new AddUnit();
         feedBack = new MultiplyUnit();
@@ -63,11 +57,11 @@ class DroneThread extends Thread {
         droneEnvPlayer.output.connect(outAMixer.inputA);
         del2.output.connect(outAMixer.inputB);
         del2.output.connect(feedBack.inputA);
-        outAMixer.output.connect(0, droneOut.input, 0);
+        outAMixer.output.connect(ampoutL.inputA);
         droneEnvPlayer.output.connect(del1inMixer.inputA);
         feedBack.output.connect(del1inMixer.inputB);
         del1inMixer.output.connect(del1.input);
-        del1.output.connect(0, droneOut.input, 1);
+        del1.output.connect(ampoutR.inputA);
         del1.output.connect(del2.input);
 
         double[] data =
@@ -96,7 +90,7 @@ class DroneThread extends Thread {
 
     void stopSound() {
         try {
-            droneOut.stop();
+            noteOut.stop();  // todo move up to super
             droneOsc[0].stop();
             droneOsc[1].stop();
             oscMixer.stop();
@@ -118,13 +112,6 @@ class DroneThread extends Thread {
         interrupt();
     }
 
-    private void setRunning(boolean runState) {
-        if (running != runState) {
-            running = runState;
-            DroneNotes.logThreadStatus();
-        }
-    }
-
     public void run() {
         double freq;
         double wait;
@@ -143,7 +130,9 @@ class DroneThread extends Thread {
             droneFilt.start();
             del1.start();
             del2.start();
-            droneOut.start();
+            ampoutL.start();
+            ampoutR.start();
+            noteOut.start();
 
             while (go == true) {
                 droneOsc[0].amplitude.set(0.1);
@@ -171,13 +160,6 @@ class DroneThread extends Thread {
                 basewait = basewait + (int) wait;
                 Synth.sleepUntilTick(basewait);
 
-                setRunning(false);
-                while (Math.random() > prob) {
-                    basewait = basewait + (15 * 689);
-                    Synth.sleepUntilTick(basewait);
-                }
-                setRunning(true);
-
                 for (i = 0; i < 256; i++) {
                     tData[i] = Math.random() * 2.0 - 1.0;
                 }
@@ -192,51 +174,51 @@ class DroneThread extends Thread {
 
 }
 
-public class DroneNotes extends Thread {
-    public final static int NUM_DRONE_THREADS = 10;
-    private final static Logger logger = Logger.getLogger(DroneNotes.class.getName());
-
-    static DroneThread[] drones = new DroneThread[NUM_DRONE_THREADS];
-
-    public void start() {
-        try {
-            for (int i = 0; i < drones.length; i++) {
-                drones[i] = new DroneThread();
-                drones[i].threadNum = i;
-                drones[i].start();
-
-            }
-        } catch (SynthException e) {
-            SynthAlert.showError(e);
-        }
-    }
-
-    public void stopSound() {
-        try {
-            for (int i = 0; i < drones.length; i++) {
-                drones[i].stopSound();
-            }
-        } catch (SynthException e) {
-            SynthAlert.showError(e);
-        }
-    }
-
-    public void setProb(double p) {
-        for (int i = 0; i < drones.length; i++) {
-            drones[i].prob = p;
-        }
-    }
-
-    static public void logThreadStatus() {
-        StringBuffer status = new StringBuffer();
-        for (int i = 0; i < drones.length; i++) {
-            if (drones[i].go == false)
-                status.append("X");
-            else if (drones[i].running)
-                status.append("+");
-            else
-                status.append("-");
-        }
-        logger.fine("Drone thread status: " + status);
-    }
-}
+//public class DroneNotes extends Thread {
+//    public final static int NUM_DRONE_THREADS = 10;
+//    private final static Logger logger = Logger.getLogger(DroneNotes.class.getName());
+//
+//    static PlayerDroner[] drones = new PlayerDroner[NUM_DRONE_THREADS];
+//
+//    public void start() {
+//        try {
+//            for (int i = 0; i < drones.length; i++) {
+//                drones[i] = new PlayerDroner();
+//                drones[i].threadNum = i;
+//                drones[i].start();
+//
+//            }
+//        } catch (SynthException e) {
+//            SynthAlert.showError(e);
+//        }
+//    }
+//
+//    public void stopSound() {
+//        try {
+//            for (int i = 0; i < drones.length; i++) {
+//                drones[i].stopSound();
+//            }
+//        } catch (SynthException e) {
+//            SynthAlert.showError(e);
+//        }
+//    }
+//
+//    public void setProb(double p) {
+//        for (int i = 0; i < drones.length; i++) {
+//            drones[i].prob = p;
+//        }
+//    }
+//
+//    static public void logThreadStatus() {
+//        StringBuffer status = new StringBuffer();
+//        for (int i = 0; i < drones.length; i++) {
+//            if (drones[i].go == false)
+//                status.append("X");
+//            else if (drones[i].running)
+//                status.append("+");
+//            else
+//                status.append("-");
+//        }
+//        logger.fine("Drone thread status: " + status);
+//    }
+//}

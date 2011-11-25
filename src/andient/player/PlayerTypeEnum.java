@@ -10,7 +10,8 @@ public enum PlayerTypeEnum {
     FLOATER("Floater"),
     DOODLER("Doodler"),
     CHUNKER("Chunker"),
-    BASS("Bass");
+    BASS("Bass"),
+    DRONER("Droner");
 
     private final String label;
 

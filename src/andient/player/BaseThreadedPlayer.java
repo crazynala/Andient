@@ -35,7 +35,7 @@ public abstract class BaseThreadedPlayer extends Thread implements Player {
 
     private final static Logger logger = Logger.getLogger(BaseThreadedPlayer.class.getName());
 
-    protected BaseThreadedPlayer(int amplitudeSetting, double loadValue, double pitchBase, int lowTriggerThreshold, int highTriggerThreshold, int triggerLevel) throws SynthException {
+    public BaseThreadedPlayer(int amplitudeSetting, double loadValue, double pitchBase, int lowTriggerThreshold, int highTriggerThreshold, int triggerLevel) throws SynthException {
         this.amplitudeSetting = amplitudeSetting;
         this.loadValue = loadValue;
         setPitchBase(pitchBase);
