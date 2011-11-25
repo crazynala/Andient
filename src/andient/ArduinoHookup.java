@@ -4,6 +4,7 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +17,7 @@ public class ArduinoHookup implements SerialPortEventListener {
 
     SerialPort serialPort;
     KnobListener listener;
+    byte[] byteBufferArray;
 
     private final static Logger logger = Logger.getLogger(ArduinoHookup.class.getName());
 
@@ -111,11 +113,19 @@ public class ArduinoHookup implements SerialPortEventListener {
                 byte chunk[] = new byte[available];
                 input.read(chunk, 0, available);
 
+                byteBufferArray = ArrayUtils.addAll(byteBufferArray, chunk);
+
+                if (ArrayUtils.contains(byteBufferArray, (byte) 0x0D) && ArrayUtils.contains(byteBufferArray, (byte) 0x0A)) {
+                    int endlineLoc = ArrayUtils.indexOf(byteBufferArray, (byte) 0x0D);
+                    byte[] data = ArrayUtils.subarray(byteBufferArray, 0, endlineLoc);
+                    if (OUTPUT_ARDUINO_DATA) {
+                        System.out.println(toHex(byteBufferArray) + " -> '" + toHex(data) + " -> " + new String(data).trim());
+                    }
+                    byteBufferArray = ArrayUtils.subarray(byteBufferArray, endlineLoc, byteBufferArray.length);
+                }
+
                 // Displayed results are codepage dependent
                 String chunkString = new String(chunk).trim();
-                if (OUTPUT_ARDUINO_DATA) {
-                    System.out.println(chunk.length + ":" + toHex(chunk) + ":'" + chunkString + "'");
-                }
                 if (chunkString.length() > 0) {
                     try {
                         int chunkValue;
