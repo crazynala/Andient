@@ -133,33 +133,25 @@ public class ArduinoHookup implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 int available = input.available();
-                byte chunk[] = new byte[available];
+                byte[] chunk = new byte[available];
                 input.read(chunk, 0, available);
 
                 byteBufferArray = ArrayUtils.addAll(byteBufferArray, chunk);
 
-                if ((ArrayUtils.contains(byteBufferArray, (byte) 13) && ArrayUtils.contains(byteBufferArray, (byte) 10))) {
-                    int endlineLoc = ArrayUtils.indexOf(byteBufferArray, (byte) 13);
-                    System.out.println(endlineLoc);
-
-                    byte[] data = ArrayUtils.subarray(byteBufferArray, 0, endlineLoc);
+                if (hasCRNL(byteBufferArray)) {
+                    String data = readTrimmedFirstLine(byteBufferArray);
+                    byteBufferArray = removeFirstLine(byteBufferArray);
                     if (OUTPUT_ARDUINO_DATA) {
-//                        System.out.println(ArrayUtils.toString(byteBufferArray) + " -> '" + ArrayUtils.toString(data) + " -> " + new String(data).trim());
+                        System.out.println(ArrayUtils.toString(byteBufferArray) + " -> '" + ArrayUtils.toString(data) + " -> " + new String(data).trim());
                     }
-                    byteBufferArray = ArrayUtils.subarray(byteBufferArray, endlineLoc + 2, byteBufferArray.length);
-                }
-
-                // Displayed results are codepage dependent
-                String chunkString = new String(chunk).trim();
-                if (chunkString.length() > 0) {
-                    try {
-                        int chunkValue;
-                        chunkValue = Integer.valueOf(chunkString);
-                        if (listener != null) {
-                            listener.onKnobNotify(chunkValue);
+                    if (data.length() > 0) {
+                        try {
+                            if (listener != null) {
+                                listener.onKnobNotify(Integer.valueOf(data));
+                            }
+                        } catch (NumberFormatException e) {
+                            // swallow it
                         }
-                    } catch (NumberFormatException e) {
-                        // swallow it
                     }
                 }
             } catch (Exception e) {
