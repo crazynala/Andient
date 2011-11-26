@@ -103,6 +103,29 @@ public class ArduinoHookup implements SerialPortEventListener {
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }
 
+    // has carriage return & new line
+    boolean hasCRNL(byte[] bytearray) {
+        return (ArrayUtils.contains(bytearray, (byte) 0xd) && ArrayUtils.contains(bytearray, (byte) 0xa));
+    }
+
+    int indexOfCR(byte[] bytearray) {
+        return ArrayUtils.indexOf(bytearray, (byte) 0xd);
+    }
+
+    String readTrimmedFirstLine(byte[] bytearray) {
+        if (hasCRNL(bytearray)) {
+            int crIndex = indexOfCR(bytearray);
+            return new String(ArrayUtils.subarray(bytearray, 0, crIndex)); // endIndex is exclusive, so chop off the CR & NL
+        } else return null;
+    }
+
+    byte[] removeFirstLine(byte[] bytearray) {
+        if (hasCRNL(bytearray)) {
+            return (ArrayUtils.subarray(bytearray, indexOfCR(bytearray) + 2, bytearray.length));
+        }
+        return null;
+    }
+
     /**
      * Handle an event on the serial port. Read the data and print it.
      */
@@ -115,13 +138,15 @@ public class ArduinoHookup implements SerialPortEventListener {
 
                 byteBufferArray = ArrayUtils.addAll(byteBufferArray, chunk);
 
-                if (ArrayUtils.contains(byteBufferArray, (byte) 0x0D) && ArrayUtils.contains(byteBufferArray, (byte) 0x0A)) {
-                    int endlineLoc = ArrayUtils.indexOf(byteBufferArray, (byte) 0x0D);
+                if ((ArrayUtils.contains(byteBufferArray, (byte) 13) && ArrayUtils.contains(byteBufferArray, (byte) 10))) {
+                    int endlineLoc = ArrayUtils.indexOf(byteBufferArray, (byte) 13);
+                    System.out.println(endlineLoc);
+
                     byte[] data = ArrayUtils.subarray(byteBufferArray, 0, endlineLoc);
                     if (OUTPUT_ARDUINO_DATA) {
-                        System.out.println(toHex(byteBufferArray) + " -> '" + toHex(data) + " -> " + new String(data).trim());
+//                        System.out.println(ArrayUtils.toString(byteBufferArray) + " -> '" + ArrayUtils.toString(data) + " -> " + new String(data).trim());
                     }
-                    byteBufferArray = ArrayUtils.subarray(byteBufferArray, endlineLoc, byteBufferArray.length);
+                    byteBufferArray = ArrayUtils.subarray(byteBufferArray, endlineLoc + 2, byteBufferArray.length);
                 }
 
                 // Displayed results are codepage dependent
@@ -138,7 +163,7 @@ public class ArduinoHookup implements SerialPortEventListener {
                     }
                 }
             } catch (Exception e) {
-                System.err.println(e.toString());
+                e.printStackTrace();
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
